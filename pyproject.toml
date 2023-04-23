@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools >= 40.9.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "spritesheet-maker"
+authors = [
+  { name="Maxim Mironyuk", email="serieznyi@gmail.com" },
+]
+license = { file = "LICENSE" }
+description = "CLI util to make spritesheet from images"
+readme = "README.md"
+requires-python = ">=3.6"
+version="0.1.0"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: MIT License",
+]
+dependencies = [
+  "Pillow~=9.5.0",
+]
+[project.urls]
+"Homepage" = "https://github.com/serieznyi/spritesheet-maker"
+"Bug Tracker" = "https://github.com/serieznyi/spritesheet-maker/issues"
+
+[project.optional-dependencies]
+tests = [
+  "pytest",
+]
+
+[project.scripts]
+spritesheet-maker = "spritesheetmaker.main:main"
+
+
+
+
+
+
+
+
+
+
+
