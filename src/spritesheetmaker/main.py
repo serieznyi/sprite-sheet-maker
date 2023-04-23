@@ -55,15 +55,7 @@ def generate_sprite_sheet(source_dir: Path, output_dir: Path, rows: int | None, 
     sprite_sheet_width = int(tile_width * max_columns)
     sprite_sheet_height = tile_height * max_rows
 
-    print(sprite_sheet_width, sprite_sheet_height)
-
     sprite_sheet = Image.new("RGBA", (sprite_sheet_width, sprite_sheet_height))
-
-    # ((0, 0), (500, 500))
-    # ((0, 500), (1000, 500))
-    # ((0, 1000), (1500, 500))
-    # ((0, 1500), (2000, 500))
-    # ((0, 2000), (2500, 500))
 
     for frame in frames:
         cropped_frame = frame.crop((0, 0, tile_width, tile_height))
@@ -84,12 +76,6 @@ def generate_sprite_sheet(source_dir: Path, output_dir: Path, rows: int | None, 
         y2 = y1 + tile_height
 
         box = (x1, y1, x2, y2)
-
-        print(frame_index,
-              math.floor(frame_index / max_columns),
-              (frame_index % max_columns),
-              box
-              )
 
         sprite_sheet.paste(cropped_frame, box)
 
@@ -112,7 +98,6 @@ def main():
 
 def argparse_validation_dir_path(mode: int):
     """
-
     :type mode: os.R_OK or os.W_OK
     """
 
