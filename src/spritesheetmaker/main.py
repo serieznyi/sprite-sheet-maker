@@ -1,9 +1,10 @@
 import argparse
+from datetime import datetime
 import logging
 import math
 import os
-import time
 
+from typing import Any
 from pathlib import Path
 from PIL import Image
 
@@ -15,51 +16,57 @@ logging.basicConfig(format=FORMAT)
 logger = logging.getLogger('main')
 logger.setLevel(logging.DEBUG)
 
+def chunks(values, chunk_size) -> list[list[Any]]:
+    """Yield successive n-sized chunks from lst."""
 
-def read_images(source_dir: Path) -> list:
+    chunks = []
+    for i in range(0, len(values), chunk_size):
+        chunks.append(values[i:i + chunk_size])
+
+    return chunks
+
+def read_images(source_dir: Path, chunk_size: int | None) -> list[list[Path]]:
     files = sorted(source_dir.glob('*.*'))
-    frames = []
+    images = []
 
     for current_file in files:
         logger.debug("Read file: %s" % current_file)
         try:
             with Image.open(current_file) as im:
-                frames.append(im.getdata())
+                images.append(im.getdata())
         except Exception as e:
             raise RuntimeError("'%s' is not a valid image" % current_file, e)
 
-    return frames
+    images_count = len(images)
+    chunk_size = images_count if not chunk_size else chunk_size
 
+    if images_count > 0:
+        logger.info("Source images count: %s" % images_count)
 
-def generate_sprite_sheet(source_dir: Path, output_dir: Path, rows: int | None, columns: int | None) -> None:
-    logger.info("Source dir: %s" % source_dir)
-    logger.info("Output dir: %s" % output_dir)
+    return chunks(images, chunk_size)
 
-    frames = read_images(source_dir)
-    frames_count = len(frames)
-
-    if frames_count == 0:
-        logger.warning("Source dir is empty")
-        return
-
-    logger.info("Source images count: %s" % frames_count)
-
+def generate_sprite_sheet_from_images_chunk(
+        images: list[Path],
+        output_dir: Path,
+        rows: int | None,
+        columns: int | None
+) -> None:
     max_columns = columns if columns else DEFAULT_COLUMNS_COUNT
-    max_rows = rows if rows else math.ceil(len(frames) / DEFAULT_COLUMNS_COUNT)
+    max_rows = rows if rows else math.ceil(len(images) / DEFAULT_COLUMNS_COUNT)
 
     logger.info("Grid size: columns = %s, rows = %s" % (max_columns, max_rows))
 
-    tile_width = frames[0].size[0]
-    tile_height = frames[0].size[1]
+    tile_width = images[0].size[0]
+    tile_height = images[0].size[1]
 
     sprite_sheet_width = int(tile_width * max_columns)
     sprite_sheet_height = tile_height * max_rows
 
     sprite_sheet = Image.new("RGBA", (sprite_sheet_width, sprite_sheet_height))
 
-    for frame in frames:
+    for frame in images:
         cropped_frame = frame.crop((0, 0, tile_width, tile_height))
-        frame_index = frames.index(frame)
+        frame_index = images.index(frame)
 
         if frame_index > max_rows * max_columns:
             print("Break. Images more than need for grid")
@@ -79,18 +86,41 @@ def generate_sprite_sheet(source_dir: Path, output_dir: Path, rows: int | None, 
 
         sprite_sheet.paste(cropped_frame, box)
 
-    sprite_sheet_file_name = "sprite_sheet" + time.strftime("%Y%m%dT%H%M%S") + ".png"
-    sprite_sheet.save(Path(output_dir, sprite_sheet_file_name), "PNG")
+    sprite_sheet_file_name = "spritesheet_" + datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%f") + ".png"
+    output_file = Path(output_dir, sprite_sheet_file_name)
+    sprite_sheet.save(output_file, "PNG")
 
+    logger.info("generated sprite path: %s" % output_file)
+
+def generate_sprite_sheets(
+        source_dir: Path,
+        output_dir: Path,
+        rows: int | None,
+        columns: int | None,
+        chunk_size = int | None
+) -> None:
+    logger.info("Source dir: %s" % source_dir)
+    logger.info("Output dir: %s" % output_dir)
+
+    images_chunks = read_images(source_dir, chunk_size)
+
+    if len(images_chunks) == 0:
+        logger.warning("Source dir is empty")
+        return
+
+    for i, chunk in enumerate(images_chunks):
+        logger.info("Generate chunk %s" % str(i+1))
+        generate_sprite_sheet_from_images_chunk(chunk, output_dir, rows, columns)
 
 def main():
     options = parse_args()
 
     logger.setLevel(eval('logging.' + options.logLevel.upper()))
 
-    generate_sprite_sheet(
+    generate_sprite_sheets(
         source_dir=options.sourceDir,
         output_dir=options.outputDir,
+        chunk_size=options.chunkSize,
         rows=options.rows,
         columns=options.columns
     )
@@ -160,6 +190,12 @@ def parse_args():
         '--columns',
         type=argparse_validation_int(1),
         help="Rows count"
+    )
+
+    parser.add_argument(
+        '--chunkSize',
+        type=argparse_validation_int(1),
+        help="Split images from source dir on chunks"
     )
 
     parser.add_argument(
