@@ -5,7 +5,7 @@ Python script to pack images to spritesheet
 ## Install
 
 ```commandline
-pip install git+https://github.com/serieznyi/spritesheets-maker.git
+pip install https://github.com/serieznyi/spritesheet-maker/archive/refs/heads/main.zip
 ```
 
 ## Usage
