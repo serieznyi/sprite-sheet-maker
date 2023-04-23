@@ -62,7 +62,7 @@ def generate_sprite_sheet(source_dir: Path, output_dir: Path, rows: int | None, 
         frame_index = frames.index(frame)
 
         if frame_index > max_rows * max_columns:
-            print("ASD")
+            print("Break. Images more than need for grid")
             break
 
         # (x1,y1)------------|
