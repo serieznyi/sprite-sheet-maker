@@ -17,7 +17,7 @@ logger.setLevel(logging.DEBUG)
 
 
 def read_images(source_dir: Path) -> list:
-    files = sorted(source_dir.glob('**/*'))
+    files = sorted(source_dir.glob('*.*'))
     frames = []
 
     for current_file in files:
