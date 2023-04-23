@@ -127,7 +127,7 @@ def argparse_validation_dir_path(mode: int):
         elif mode == os.W_OK and not os.access(directory, os.W_OK):
             raise argparse.ArgumentTypeError("File %s not writable" % value)
 
-        return directory.absolute()
+        return directory.resolve()
 
     return validator
 
