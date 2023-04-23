@@ -11,7 +11,7 @@ pip install https://github.com/serieznyi/spritesheet-maker/archive/refs/heads/ma
 ## Usage
 
 ```shell
-spritesheets-maker -h
+spritesheet-maker -h
 ```
 
 ## References
