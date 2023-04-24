@@ -48,8 +48,10 @@ def read_images(source_dir: Path, chunk_size: int | None) -> list[list[Path]]:
 def generate_sprite_sheet_from_images_chunk(
         images: list[Path],
         output_dir: Path,
+        chunk_number: int,
         rows: int | None,
-        columns: int | None
+        columns: int | None,
+        spritesheet_name = str | None
 ) -> None:
     max_columns = columns if columns else DEFAULT_COLUMNS_COUNT
     max_rows = rows if rows else math.ceil(len(images) / DEFAULT_COLUMNS_COUNT)
@@ -86,7 +88,11 @@ def generate_sprite_sheet_from_images_chunk(
 
         sprite_sheet.paste(cropped_frame, box)
 
-    sprite_sheet_file_name = "spritesheet_" + datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%f") + ".png"
+    if spritesheet_name:
+        sprite_sheet_file_name = "%s-%s.png" % (spritesheet_name, chunk_number)
+    else:
+        sprite_sheet_file_name = "spritesheet_" + datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%f") + ".png"
+
     output_file = Path(output_dir, sprite_sheet_file_name)
     sprite_sheet.save(output_file, "PNG")
 
@@ -97,7 +103,8 @@ def generate_sprite_sheets(
         output_dir: Path,
         rows: int | None,
         columns: int | None,
-        chunk_size = int | None
+        chunk_size = int | None,
+        spritesheet_name = str | None
 ) -> None:
     logger.info("Source dir: %s" % source_dir)
     logger.info("Output dir: %s" % output_dir)
@@ -109,8 +116,9 @@ def generate_sprite_sheets(
         return
 
     for i, chunk in enumerate(images_chunks):
-        logger.info("Generate chunk %s" % str(i+1))
-        generate_sprite_sheet_from_images_chunk(chunk, output_dir, rows, columns)
+        chunk_number=i+1
+        logger.info("Generate chunk %s" % chunk_number)
+        generate_sprite_sheet_from_images_chunk(chunk, output_dir, chunk_number, rows, columns, spritesheet_name)
 
 def main():
     options = parse_args()
@@ -122,7 +130,8 @@ def main():
         output_dir=options.outputDir,
         chunk_size=options.chunkSize,
         rows=options.rows,
-        columns=options.columns
+        columns=options.columns,
+        spritesheet_name=options.spritesheetName,
     )
 
 
@@ -145,6 +154,17 @@ def argparse_validation_dir_path(mode: int):
         return directory.resolve()
 
     return validator
+
+
+def argparse_validation_spritesheet_name(value):
+    try:
+        value = str(value)
+        print(value)
+    except ValueError:
+        raise argparse.ArgumentTypeError("Must be a string")
+    if not len(value):
+        raise argparse.ArgumentTypeError("Argument must be at least 1 character")
+    return value
 
 
 def argparse_validation_int(minimal_value: int = 1):
@@ -196,6 +216,12 @@ def parse_args():
         '--chunkSize',
         type=argparse_validation_int(1),
         help="Split images from source dir on chunks"
+    )
+
+    parser.add_argument(
+        '--spritesheetName',
+        type=argparse_validation_spritesheet_name,
+        help="Prefix name for created spritesheet without extension. Chunk number will be added as postfix."
     )
 
     parser.add_argument(
