@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed
 
+## [0.3.0] - 2023-04-24
+
+### Added
+ - Add parameter for setting spritesheet name
+
 ## [0.2.0] - 2023-04-23
 
 ### Added
