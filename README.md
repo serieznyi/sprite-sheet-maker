@@ -13,7 +13,7 @@ pip install https://github.com/serieznyi/spritesheet-maker/archive/refs/heads/ma
 ```shell
 $ spritesheet-maker --help
 
-usage: main.py [-h] [--rows ROWS] [--columns COLUMNS] [--chunkSize CHUNKSIZE] [--spritesheetName SPRITESHEETNAME] [--logLevel {info,debug,warn}] sourceDir outputDir
+usage: spritesheet-maker [-h] [--rows ROWS] [--columns COLUMNS] [--chunkSize CHUNKSIZE] [--spritesheetName SPRITESHEETNAME] [--logLevel {info,debug,warn}] sourceDir outputDir
 
                 Generate spritesheet image
             
