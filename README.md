@@ -13,7 +13,7 @@ pip install https://github.com/serieznyi/spritesheet-maker/archive/refs/heads/ma
 ```shell
 $ spritesheet-maker --help
 
-usage: spritesheet-maker [-h] [--rows ROWS] [--columns COLUMNS] [--chunkSize CHUNKSIZE] [--logLevel {info,debug,warn}] sourceDir outputDir
+usage: spritesheet-maker [-h] [--rows ROWS] [--columns COLUMNS] [--chunkSize CHUNKSIZE] [--spritesheetName SPRITESHEETNAME] [--logLevel {info,debug,warn}] sourceDir outputDir
 
                 Generate spritesheet image
             
@@ -28,9 +28,10 @@ options:
   --columns COLUMNS     Rows count
   --chunkSize CHUNKSIZE
                         Split images from source dir on chunks
+  --spritesheetName SPRITESHEETNAME
+                        Prefix name for created spritesheet without extension. Chunk number will be added as postfix.
   --logLevel {info,debug,warn}
                         Logging level. Default: info
-
 ```
 
 ## References
