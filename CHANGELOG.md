@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed
 
+## [0.4.0] - 2023-05-23
+
+### Added
+ - Add --version flag
+ - Add leading zero in result file name
+
 ## [0.3.0] - 2023-04-24
 
 ### Added
