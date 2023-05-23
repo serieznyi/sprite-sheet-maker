@@ -91,7 +91,7 @@ def generate_sprite_sheet_from_images_chunk(
         sprite_sheet.paste(cropped_frame, box)
 
     if spritesheet_name:
-        sprite_sheet_file_name = "%s-%s.png" % (spritesheet_name, chunk_number)
+        sprite_sheet_file_name = "%s-%02d.png" % (spritesheet_name, chunk_number)
     else:
         sprite_sheet_file_name = "spritesheet_" + datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%f") + ".png"
 
