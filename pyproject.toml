@@ -11,7 +11,7 @@ license = { file = "LICENSE" }
 description = "CLI util to make spritesheet from images"
 readme = "README.md"
 requires-python = ">=3.6"
-version="0.3.0"
+version="0.4.0"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
