@@ -3,11 +3,13 @@ from datetime import datetime
 import logging
 import math
 import os
+import importlib.metadata
 
 from typing import Any
 from pathlib import Path
 from PIL import Image
 
+PACKAGE_NAME = "spritesheet-maker"
 DEFAULT_COLUMNS_COUNT = 5
 
 # Logging
@@ -134,6 +136,8 @@ def main():
         spritesheet_name=options.spritesheetName,
     )
 
+def get_program_version() -> str:
+    return importlib.metadata.version(PACKAGE_NAME)
 
 def argparse_validation_dir_path(mode: int):
     """
@@ -231,8 +235,14 @@ def parse_args():
         choices=['info', 'debug', 'warn']
     )
 
-    return parser.parse_args()
+    parser.add_argument(
+        '--version',
+        help="Show version of program",
+        action="version",
+        version=get_program_version()
+    )
 
+    return parser.parse_args()
 
 if __name__ == '__main__':
     main()
